@@ -1,11 +1,25 @@
 <?php
+/** Utils for File System and Files */
 class UFile{
+	/**
+	 * return the content of a file or false if error
+	 * 
+	 * @param string path of string
+	 * @return string|false
+	 */
 	public static function getContents($path){
 		try{
 			return file_get_contents($path);
 		}catch(ErrorException $e){}
 		return false;
 	}
+	
+	/**
+	 * return the json decoded content of a file or false if error
+	 * 
+	 * @param string
+	 * @return mixed
+	 */
 	public static function getJSON($path){
 		try{
 			$content=file_get_contents($path);
@@ -16,6 +30,13 @@ class UFile{
 		if($jsonDecoded===null) throw new Exception('Bad JSON '.$path);
 		return $jsonDecoded;
 	}
+	
+	/**
+	 * return the yaml decoded content of a file or false if error
+	 * 
+	 * @param string
+	 * @return mixed
+	 */
 	public static function getYAML($path){
 		try{
 			$content=file_get_contents($path);
@@ -35,17 +56,39 @@ class UFile{
 	}
 	
 	
+	/**
+	 * Delete a file
+	 * 
+	 * @param string
+	 * @return mixed
+	 */
 	public static function rm($path){
 		try{
 			return unlink($path);
 		}catch(ErrorException $e){}
-		return false;
+		return bool;
 	}
 	
+	/**
+	 * Open a file
+	 * 
+	 * @param string
+	 * @param string
+	 * 
+	 * @return UFileOpened
+	 */
 	public static function open($path,$mode='r'){
 		return new UFileOpened($path,$mode);
 	}
 	
+	/**
+	 * Open a file with lock
+	 * 
+	 * @param string
+	 * @param string
+	 * 
+	 * @return UFileOpened
+	 */
 	public static function readWithLock($path,$mode='rb'){
 		$file=self::open($path,$mode);
 		if(false===$file->lockShared()){ $file->close(); return false; }
@@ -55,6 +98,14 @@ class UFile{
 		return $data;
 	}
 	
+	/**
+	 * Write to a file with lock
+	 * 
+	 * @param string
+	 * @param mixed
+	 * 
+	 * @return UFileOpened
+	 */
 	public static function writeWithLock($path,$data/*,$mode='wb'*/){
 		/*$file=self::open($path,$mode);
 		if(false===$file->lockExclusive()) return false;
@@ -66,7 +117,14 @@ class UFile{
 	}
 	
 	
-	/** Don't forget basename() if needed ! */
+	/**
+	 * return the extension of a filename
+	 *  
+	 * Don't forget basename() if needed !
+	 * 
+	 * @param string
+	 * @return string|false
+	 */
 	public static function extension($filename){
 		$ext=strrpos($filename,'.');
 		if($ext!==false) $ext=substr($filename,$ext+1);
@@ -74,57 +132,126 @@ class UFile{
 	}
 }
 
+/** An opened file
+ * @see UFile::open()
+ */
 class UFileOpened{
 	private $_path,$_file;
 
+	/** @ignore */
 	public function __construct($path,$mode){
 		$this->_file=fopen($this->_path=$path,$mode);
 	}
 	
+	/**
+	 * Close the file
+	 */
 	public function close(){
 		try{
 			return fclose($this->_file);
 		}catch(ErrorException $e){}
 	}
 	
+	/**
+	 * Write in the file using fwrite
+	 * 
+	 * @param string
+	 * @return int returns the number of bytes written, or FALSE on error.
+	 */
 	public function write($string){
 		return fwrite($this->_file,$string);
 	}
 	
+	/**
+	 * Write in the file using fwrite, with a \n
+	 * 
+	 * @param string
+	 * @return int returns the number of bytes written, or FALSE on error.
+	 */
 	public function writeLine($string){
 		return $this->write($string."\n");
 	}
 	
+	/**
+	 * Read a file using stream_get_contents.
+	 * 
+	 * @return string Returns a string or FALSE on failure.
+	 * @see stream_get_contents()
+	 */
 	public function read(){
 		//if(($filesize=filesize($this->_path)) > 0) return fread($this->_file,$filesize);
 		//return null;
 		return stream_get_contents($this->_file);
 	}
+	
+	/**
+	 * Read a line using stream_get_line
+	 * Reading ends when length bytes have been read, when the string specified by ending is found (which is not included in the return value), or on EOF (whichever comes first). 
+	 * 
+	 * @see stream_get_line()
+	 * @return string Returns a string of up to length bytes read from the file pointed to by handle.
+	 */
 	public function readLine($length=8192,$ending="\n"){
 		return stream_get_line($this->_file,$length,$ending);
 	}
+	
+	/**
+	 * Read line and convert it to UTF-8
+	 * 
+	 * @see readLine()
+	 * @see UEncoding::convertToUtf8()
+	 * @return string
+	 */
 	public function readLineToUtf8($length=8192,$ending="\n"){
 		return UEncoding::convertToUtf8($this->readLine($length,$ending));
 	}
 	
+	/**
+	 * Gets line and parse for CSV fields
+	 * 
+	 * @param string
+	 * @param string
+	 * @param string
+	 * @return array
+	 */
 	public function readCsvLine($delimiter=',', $enclosure='"', $escape='\\'){
 		return fgetcsv($this->_file,0,$delimiter,$enclosure,$escape);
 	}
 	
+	/**
+	 * Acquire a shared lock (reader).
+	 * 
+	 * @return bool
+	 */
 	public function lockShared(){
 		return flock($this->_file,LOCK_SH);
 	}
 	
+	/**
+	 * Acquire a exclusive lock (writer).
+	 * 
+	 * @return bool
+	 */
 	public function lockExclusive(){
-		return flock($this->_file,LOCK_SH);
+		return flock($this->_file,LOCK_EX);
 	}
 
+	/**
+	 * Release a lock (shared or exclusive).
+	 * 
+	 * @return bool
+	 */
 	public function unlock(){
 		return flock($this->_file,LOCK_UN);
 	}
 
 
-
+	/**
+	 * Write a line starting with the current date
+	 * 
+	 * @param string
+	 * @return int returns the number of bytes written, or FALSE on error.
+	 */
 	public function log($message=''){
 		return $this->writeLine(date('m-d H:i:s')."\t".$message);
 	}
@@ -132,7 +259,7 @@ class UFileOpened{
 
 }
 
-/* DO NOT USE AFile, File and Folder ! This is deprecated API */
+/** @deprecated DO NOT USE AFile, File and Folder ! This is deprecated API */
 abstract class AFile{
 	protected $name;
 	
@@ -169,6 +296,7 @@ abstract class AFile{
 }
 
 
+/** @deprecated DO NOT USE AFile, File and Folder ! This is deprecated API */
 class Folder extends AFile{
 	public function __construct($dirname,$create=false){
 		if(substr($dirname,-(strlen(DS))) != DS) $dirname.=DS;
@@ -292,6 +420,7 @@ class Folder extends AFile{
 	}
 }
 
+/** @deprecated DO NOT USE AFile, File and Folder ! This is deprecated API */
 class File extends AFile{
 	public function __construct($filename){
 		parent::__construct($filename);
