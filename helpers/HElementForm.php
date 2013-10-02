@@ -5,9 +5,9 @@
  * 
  * <b>Example 1</b>
  * <code>
- * {=$form=Post::Form()->action('/post/add')->fullUrl(Config::$siteUrl)->method(HForm::GET)->tagContainer('div')}
+ * {=$form=Post::Form()->action('/post/add')->fullUrl(Config::$siteUrl['index'])->method(HForm::GET)->tagContainer('div')}
 {=$form->fieldsetStart()}
-{=$form->input('title')->label('Title of the new post')->attrId('PostNewTitleSpecialId')->container()->attr('id','divPostNewTitleContainerSpecialId)->after('I`m a text after the input !')}
+{=$form->input('title')->label('Title of the new post')->attrId('PostNewTitleSpecialId')->container()->attr('id','divPostNewTitleContainerSpecialId')->after('I`m a text after the input !')}
 {=$form->end()}
  * </code>
  * 
@@ -228,7 +228,7 @@ class HElementForm extends HElement{
 	
 	
 	/**
-	 * end the form and return the result
+	 * End the form and return the end form tag with a submit button if title is != false and a fieldset end tag if a fieldset was started
 	 * 
 	 * @param string|bool title of the submit button, true for default, false for no submit
 	 * @return string
