@@ -1,6 +1,8 @@
 <?php
 /**
  * Secure Component : handle authentification
+ * 
+ * @see https://github.com/christophehurpeau/Springbok-Framework-Plugins/tree/master/users
  */
 class CSecure{
 	const BACK_URL='SECURE_BACK_URL',
@@ -42,8 +44,21 @@ class CSecure{
 			self::$_cookie=CCookie::get(static::config('cookiename'));
 	}
 	
-	protected static function issetConfig($name){ return isset(self::$_config[$name]); }
-	public static function config($name){ return self::$_config[$name]; }
+	/**
+	 * @param string
+	 * @return bool
+	 */
+	protected static function issetConfig($name){
+		return isset(self::$_config[$name]);
+	}
+	
+	/**
+	 * @param string
+	 * @return mixed
+	 */
+	public static function config($name){
+		return self::$_config[$name];
+	}
 	
 	/**
 	 * Returns if the current user is connected
@@ -78,7 +93,7 @@ class CSecure{
 	}
 	
 	/**
-	 * Return the current user model
+	 * Return the current user model instance
 	 * 
 	 * @return SModel
 	 */
