@@ -8,6 +8,3 @@ git merge upstream/master
 git push
 cd .. && sudo su www-data -c "php enhance_cli.php"
 cd src
-git checkout a2zi
-git merge master
-git push
