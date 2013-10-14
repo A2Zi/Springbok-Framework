@@ -11,12 +11,12 @@ class PhpFile extends EnhancerFile{
 	}
 	
 	public static function regexpFunction($name='#'){
-		return '/(?:public|private|protected)\s+(?:static\s+)?function\s+('.($name==='#'?'[a-zA-Z_]+':preg_quote($name)).')\s*\((.*)\)\s*{'
+		return '/(?:public|private|protected)\s+(?:static\s+)?function\s+('.($name==='#'||$name==='*'?'[a-zA-Z_]+':preg_quote($name)).')\s*\((.*)\)\s*{'
 																		.'\s*(.*)\s*\n(?:\t|\040{2}|\040{4})}\n/Us';
 	}
 	
 	public static function regexpArrayField($name='#'){
-		return '/\s*public\s*(?:static)?\s*\$'.($name==='#'?'[a-zA-Z_]+':preg_quote($name)).'\s*=\s*((?:array\(.*\)|\[.*\]);)/Us';
+		return '/\s*public\s*(?:static)?\s*\$'.($name==='#'||$name==='*'?'[a-zA-Z_]+':preg_quote($name)).'\s*=\s*((?:array\(.*\)|\[.*\]);)/Us';
 	}
 	
 	protected function loadContent($srcContent){
@@ -322,7 +322,7 @@ class PhpFile extends EnhancerFile{
 */		$recursifPattern='[^()]*(?:\([^()]+\)[^()]*)*';
 		$i=5;while($i-- > 0) $recursifPattern=str_replace('[^()]+',$recursifPattern,$recursifPattern);//echo $recursifPattern;
 		$phpFile=&$this;
-		$newPhpContent=preg_replace_callback('/((?:\$([^={}\(\)]+)\s*=\s*!?\s*|\s+(?:self::)?set(?:ForLayout)?\([^,]+,|\=\>|if\(!?|&&\s*!?|\|\|\s*!?|\s*\?|'
+		$newPhpContent=preg_replace_callback('/((?:\$([^={}\(\)\;\[\]\s]+)\s*=\s*!?\s*|\s+(?:self::)?set(?:ForLayout)?\([^,]+,|\=\>|if\(!?|&&\s*!?|\|\|\s*!?|\s*\?|'
 									.'foreach\(|implode\(\'[^\']+\',|json_encode\(|renderJSON\(|return|else|;|}|\:\:mToArray\(|((?:(?:CTable(?:One)?|CPagination[^\:]*)\:\:create|\->query)\(\s*)?\n)\s*'
 				.($isModelFile?'(?:self|parent|(?:[A-Z][a-z][A-Za-z0-9_]*|E[A-Z]{2}[a-z][A-Za-z0-9_]*|\$[A-Za-z0-9_]+))':'(?:[A-Z][a-z][A-Za-z0-9_]*|E[A-Z]{2}[a-z][A-Za-z0-9_]*|\$[A-Za-z0-9_]+)')
 				.'\:\:(?:ById|ByIdAndStatus|ByIdAndType|QCount|QDeleteAll|QDeleteOne|QExist|QAll|QListAll|QListName|QListRows|QList|QOne|QValue|QValues|QInsert|QInsertSelect|QLoadData|QReplace|QUnion|QUpdate|QUpdateOne|QUpdateOneField|QRows|QRow)'
