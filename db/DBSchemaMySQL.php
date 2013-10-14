@@ -147,7 +147,7 @@ class DBSchemaMySQL extends DBSchema{
 			.(substr($colType,0,7)==='varchar' || substr($colType,0,4)==='char' || substr($colType,0,4)==='enum'  ?' CHARACTER SET utf8 COLLATE utf8_general_ci':'')
 			.($col['notnull']?' NOT NULL':'')
 			.($col['autoincrement']?($aiPk?' PRIMARY KEY':'').' AUTO_INCREMENT':'')
-			.($col['default']?' DEFAULT '.(is_numeric($col['default']) || $col['default']==='CURRENT_TIMESTAMP'?$col['default']:'"'.trim($col['default'],'"').'"'):'')
+			.(isset($col['default'])?' DEFAULT '.(is_numeric($col['default']) || $col['default']==='CURRENT_TIMESTAMP'?$col['default']:'"'.trim($col['default'],'"').'"'):'')
 			.($col['default']===0?' DEFAULT 0':'')
 			.($col['comment']?' COMMENT "'.$col['comment'].'"':'');
 	}
