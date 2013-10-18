@@ -1,6 +1,16 @@
 <?php
 /**
  * Test Navigator
+ * @method STestCheck equals() (mixed $value,mixed $expected)
+ * @method STestCheck isArray() (array $value)
+ * @method STestCheck size() (array $value, int $size)
+ * @method STestCheck contains() (array|string $value, int $string) the $value must contains $string
+ * @method STestCheck isString() (string $value)
+ * @method STestCheck maxLength() (string $value, int $maxLength)
+ * @method STestCheck minLength() (string $value, int $minLength)
+ * @method STestCheck doubleSpace() (string $value) the string should not have two consecutive space
+ * @method STestCheck check() (mixed $value,string $varInfo=null) return STestCheck, you can then do some tests
+ * @method void ex() (string $message,string $details) throw a {@link SDetailedException}
  */
 class TestNavigator extends CHttpClient{
 	private $testClass,$currentUrl,$defaultEntry='index';
@@ -9,6 +19,7 @@ class TestNavigator extends CHttpClient{
 	 * @param STest
 	 */
 	public function __construct($testClass){
+		parent::__construct();
 		$this->testClass=$testClass;
 		$this->doNotFollowRedirects();
 		$this->parseHeaders();
@@ -103,15 +114,28 @@ class TestNavigator extends CHttpClient{
 		}
 	}
 	
+	public function checkStatus($status){
+		if($this->getStatus()!==$status)
+			$this->testClass->ex('Status: '.$this->getStatus().' !== '.$status,
+						$this->getStatus()===301||$this->getStatus()===302?' to '.$this->getHeader('location'):'');
+	}
+	
 	/**
 	 * Checks if the Http Code is 200
 	 * 
 	 * @return void
 	 */
 	public function status200(){
-		if($this->getStatus()!==200)
-			$this->testClass->ex('Status: '.$this->getStatus().' !== 200',
-						$this->getStatus()===301||$this->getStatus()===302?' to '.$this->getHeader('location'):'');
+		$this->checkStatus(200);
+	}
+	
+	/**
+	 * Checks if the Http Code is 404 (Not Found)
+	 * 
+	 * @return void
+	 */
+	public function status404(){
+		$this->checkStatus(404);
 	}
 	
 	/**
@@ -122,8 +146,7 @@ class TestNavigator extends CHttpClient{
 	 * @return void
 	 */
 	public function checkRedirectPermanent($to,$index=null){
-		if($this->getStatus()!==301)
-			$this->testClass->ex('Status: '.$this->getStatus().' !== 301','');
+		$this->checkStatus(301);
 		$this->equals($this->getHeader('location'),($index===null?'':App::siteUrl($index,false)).$to);
 	}
 	
@@ -135,8 +158,7 @@ class TestNavigator extends CHttpClient{
 	 * @return void
 	 */
 	public function checkRedirect($to,$index=null){
-		if($this->getStatus()!==302)
-			$this->testClass->ex('Status: '.$this->getStatus().' !== 302','');
+		$this->checkStatus(302);
 		$this->equals($this->getHeader('location'),($index===null?'':App::siteUrl($index,false)).$to);
 	}
 	
@@ -167,9 +189,9 @@ class TestNavigator extends CHttpClient{
 	 * @return simple_html_dom
 	 * @see checkHtml
 	 */
-	public function html200(){
+	public function html200($checkMetas=true,$checkH1=true){
 		$this->status200();
-		return $this->checkHtml();
+		return $this->checkHtml($checkMetas,$checkH1);
 	}
 	
 	/**
@@ -179,15 +201,17 @@ class TestNavigator extends CHttpClient{
 	 * @see checkMetas
 	 * @return simple_html_dom
 	 */
-	public function checkHtml(){
+	public function checkHtml($checkMetas=true,$checkH1=true){
 		$this->checkHeadLinks();
-		$this->metas=$this->checkMetas();
+		if($checkMetas) $this->metas=$this->checkMetas();
 		$parsedHtml=$this->_parseHtml();
 		if(empty($parsedHtml)) $this->testClass->ex('Not Valid Html','');
-		$h1=$parsedHtml->find('body h1');
-		$this->check($h1,'<h1>')->size(1);
-		$this->h1=$h1[0];
-		$this->check($this->h1->innertext,'<h1>')->doubleSpace();
+		if($checkH1){
+			$h1=$parsedHtml->find('body h1');
+			$this->check($h1,'<h1>')->size(1);
+			$this->h1=$h1[0];
+			$this->check($this->h1->innertext,'<h1>')->doubleSpace();
+		}
 		return $this->parsedHtml;
 	}
 	
@@ -230,7 +254,7 @@ class TestNavigator extends CHttpClient{
 		$metaTitle=$parsedHtml->find('head title');
 		$this->check($metaTitle,'Meta title tags')->size(1);
 		$metaTitle=$metaTitle[0]; $metaTitleText=hdecode($metaTitle->innertext);
-		$c=$this->check($metaTitleText,'Meta title')->doubleSpace()->minLength(20);
+		$c=$this->check($metaTitleText,'Meta title')->doubleSpace()->minLength($this->testClass->_mustBePerfect() ? 20 : 15);
 		if($this->testClass->_mustBePerfect()) $c->maxLength(69);
 		
 		$metaDescription=$parsedHtml->find('head meta[name="description"]');
@@ -379,7 +403,7 @@ class STest{
 					if(is_string($result)) echo $result;
 					elseif(!empty($result['exception'])){
 						echo cliColor('Exception:',CliColors::red).' '.$result['exception']->getMessage()."\n";
-						echo 'in '.$result['exception']->getFile().':'.$result['exception']->getLine();
+						echo 'in '.$result['exception']->getFile().':'.$result['exception']->getLine()."\n";
 						echo prettyBackTrace(0,$result['exception']->getTrace());
 					}else echo UVarDump::dump($result,4,false);
 				}
