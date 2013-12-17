@@ -37,3 +37,4 @@ _svn
 svn-commit*.tmp
 
 /.git/
+.settings
