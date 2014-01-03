@@ -51,17 +51,18 @@ class HElementFormInput extends HElementFormContainable{
 						} 
 						break;
 				}
-				
-				ACValidation::inputValidation($this,$propDef['annotations']);
-				if(isset($propDef['annotations']['MaxLength'])){
-					if($this->attributes['maxlength'] < 10) $this->attributes['size']=11;
-					elseif($this->attributes['maxlength'] <= 30) $this->attributes['size']=25;
-					elseif($this->attributes['maxlength'] < 80) $this->attributes['size']=30;
-					elseif($this->attributes['maxlength'] < 120) $this->attributes['size']=40;
-					elseif($this->attributes['maxlength'] < 160) $this->attributes['size']=50;
-					elseif($this->attributes['maxlength'] < 200) $this->attributes['size']=60;
-					else $this->attributes['size']=70;
-					$this->attributes['size']*=$largeSize;
+				if(isset($propDef['annotations'])){
+					ACValidation::inputValidation($this,$propDef['annotations']);
+					if(isset($propDef['annotations']['MaxLength'])){
+						if($this->attributes['maxlength'] < 10) $this->attributes['size']=11;
+						elseif($this->attributes['maxlength'] <= 30) $this->attributes['size']=25;
+						elseif($this->attributes['maxlength'] < 80) $this->attributes['size']=30;
+						elseif($this->attributes['maxlength'] < 120) $this->attributes['size']=40;
+						elseif($this->attributes['maxlength'] < 160) $this->attributes['size']=50;
+						elseif($this->attributes['maxlength'] < 200) $this->attributes['size']=60;
+						else $this->attributes['size']=70;
+						$this->attributes['size']*=$largeSize;
+					}
 				}
 			}
 		}
