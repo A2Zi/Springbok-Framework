@@ -28,7 +28,7 @@ class HElementFormInput extends HElementFormContainable{
 				switch($propDef['type']){
 					case 'int': $type='number'; break;
 					case 'float': case 'double':
-						$this->attributes['pattern']='[0-9]*([\.\,][0-9]+)?';
+						$this->attributes['pattern']='-?[0-9]*([\.\,][0-9]+)?';
 						break;
 					case 'string':
 						switch($name){
