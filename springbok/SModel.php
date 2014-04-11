@@ -386,6 +386,18 @@ abstract class SModel implements IteratorAggregate,ArrayAccess,Serializable,Json
 		return $this->toArray();
 	}
 	
+	public static function recursiveToArray($data){
+		if($data instanceof SModel){
+		 	$data = $data->toArray();
+		}
+		if( is_array( $data ) || $data instanceof Traversable ){
+			foreach($data as &$d){
+				$d=self::recursiveToArray($d);
+			}
+		}
+		return $data;
+	}
+	
 	/**
 	 * @param array
 	 * @param string
