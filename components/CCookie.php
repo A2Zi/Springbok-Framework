@@ -53,8 +53,8 @@ class CCookie{
 	/**
 	 * Permanently delete a cookie
 	 */
-	public static function delete($name){
-		$config=self::_getConfig($name);
+	public static function delete($name,$notSetConfig=array()){
+		$config=self::_getConfig($name,$notSetConfig);
 		setcookie($name,'',time()-42000,$config['path'],$config['domain'],$config['https'],$config['httponly']);
 	}
 	
