@@ -136,28 +136,35 @@ abstract class DBSql extends DB{
 	
 	/*#if DEV */
 	private $_nbQueries=0,$_queries=array();
+	/*#/if*/
 	
-	public function getQueries(){ return $this->_queries; }
-	public function getNbQueries(){ return $this->_nbQueries; }
+	public function getQueries(){/*#if DEV */ return $this->_queries; /*#/if*/}
+	public function getNbQueries(){/*#if DEV */ return $this->_nbQueries; /*#else*/return 0;/*#/if*/}
 	
 	public function resetQueries(){
-		$this->_queries=array();
+		/*#if DEV */$this->_queries=array();/*#/if*/
 	}
 	
 	private function _logQuery($qr){
+		/*#if DEV */
 		$this->_nbQueries++;
 		if($this->_nbQueries < 1000){
 			$qr['backtrace']=array_slice(debug_backtrace(),1);
 			$this->_queries[]=$qr;
 			CLogger::get('queries-'.date('Y-m-d-H'))->log($qr['query']);
-		}else CLogger::get('queries-'.date('Y-m-d-H'))->log($qr['query']);
+		}else {
+			CLogger::get('queries-'.date('Y-m-d-H'))->log($qr['query']);
+		}
+		/*#/if*/
 	}
 	private static function _createQueryWithParams($query,$params){
+		/*#if DEV */
 		if(empty($params)) return $query;
 		$i=0;
 		return preg_replace_callback('/\?/m',function($matches) use(&$i,&$params){ return '"'.$params[$i++].'"'; },$query);
+		/*#/if*/
 	}
-	/*#/if*/
+	
 	
 	
 	
