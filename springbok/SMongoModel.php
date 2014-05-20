@@ -152,7 +152,7 @@ class SMongoModel extends SModel{
 	 * @return bool|array
 	 */
 	public static function UpdateOneUnsafe($criteria,$newObject){
-		return static::$__collection->update($criteria,$newObject,array('multiple'=>false,'safe'=>false));
+		return static::$__collection->update($criteria,$newObject,array('multiple'=>false,'w'=>1));
 	}
 	
 	/**
