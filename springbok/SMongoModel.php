@@ -128,7 +128,7 @@ class SMongoModel extends SModel{
 	 * @return array
 	 */
 	public static function InsertOneSafe($data,$options=array()){
-		$options['safe']=true;
+		$options['w']=1;
 		return static::InsertOne($data,$options);
 	}
 	
@@ -140,7 +140,7 @@ class SMongoModel extends SModel{
 	 * @return array
 	 */
 	public static function InsertOneUnsafe($data,$options=array()){
-		$options['safe']=false;
+		$options['w']=0;
 		return static::InsertOne($data,$options);
 	}
 	
@@ -185,7 +185,7 @@ class SMongoModel extends SModel{
 	 * @return bool|array
 	 */
 	public static function UpdateOneSafe($criteria,$newObject){
-		return static::$__collection->update($criteria,$newObject,array('multiple'=>false,'safe'=>true));
+		return static::$__collection->update($criteria,$newObject,array('multiple'=>false,'w'=>1));
 	}
 	
 	/**
@@ -219,7 +219,7 @@ class SMongoModel extends SModel{
 	 * @return bool|array
 	 */
 	public static function UpdateAllUnsafe($criteria,$newObject){
-		return static::$__collection->update($criteria,$newObject,array('multiple'=>true,'safe'=>false));
+		return static::$__collection->update($criteria,$newObject,array('multiple'=>true,'w'=>0));
 	}
 	
 	/**
@@ -230,7 +230,7 @@ class SMongoModel extends SModel{
 	 * @return bool|array
 	 */
 	public static function UpdateAllSafe($criteria,$newObject){
-		return static::$__collection->update($criteria,$newObject,array('multiple'=>true,'safe'=>true));
+		return static::$__collection->update($criteria,$newObject,array('multiple'=>true,'w'=>1));
 	}
 	
 	/**
@@ -241,7 +241,7 @@ class SMongoModel extends SModel{
 	 * @return bool|array
 	 */
 	public static function UpsertOneUnsafe($criteria,$newObject){
-		return static::$__collection->update($criteria,$newObject,array('multiple'=>false,'safe'=>false,'upsert'=>true));
+		return static::$__collection->update($criteria,$newObject,array('multiple'=>false,'w'=>0,'upsert'=>true));
 	}
 	
 	/**
@@ -274,7 +274,7 @@ class SMongoModel extends SModel{
 	 * @return bool|array
 	 */
 	public static function UpsertOneSafe($criteria,$newObject){
-		return static::$__collection->update($criteria,$newObject,array('multiple'=>false,'safe'=>true,'upsert'=>true));
+		return static::$__collection->update($criteria,$newObject,array('multiple'=>false,'w'=>1,'upsert'=>true));
 	}
 	
 	/**
