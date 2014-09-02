@@ -264,7 +264,9 @@ abstract class QFind extends QSelect{
 	 * @return void
 	 */
 	protected function _addWithToQuery($key,$options){
+		
 		$foptions=self::_addWith($this->with,$key,$options,$this->modelName);
+		
 		if($this->_addWithInJoin($this->modelName,$this->alias,$key,$foptions)===false) return;
 		unset($this->with[$key]);
 		if(isset($foptions['with'])) $this->_recursiveWith($foptions['with'],$foptions['modelName'],$foptions['alias']);
@@ -281,11 +283,18 @@ abstract class QFind extends QSelect{
 		if(!is_array($relation)) throw new Exception('relation is not array : '.print_r($relation,true));
 		/*#/if*/
 		$foptions=$options+$relation;
-	
+		
 		if(isset($foptions['fields']) && is_string($foptions['fields'])) $foptions['fields']=explode(',',$foptions['fields']);
 		if(isset($foptions['with'])){
 			/*#if DEV */ if(!is_array($foptions['with'])) throw new Exception('$foptions["with"] is not array : '.print_r($foptions['with'],true)); /*#/if*/
-			foreach($foptions['with'] as $kW=>&$opW){ if(is_int($kW)){unset($foptions['with'][$kW]); $kW=$opW;$opW=array();} self::_addWith($foptions['with'],$kW,$opW,$foptions['modelName']); }
+			foreach($foptions['with'] as $kW=>&$opW){
+				if(is_int($kW)){
+					unset($foptions['with'][$kW]); 
+					$kW=$opW;
+					$opW=array();
+				}
+				self::_addWith($foptions['with'],$kW,$opW,$foptions['modelName']);
+			}
 		}
 		return $withArray[$key]=$foptions;
 	}
@@ -368,11 +377,13 @@ abstract class QFind extends QSelect{
 			if(isset($join['associationForeignKey'])) throw new Exception('associationForeignKey is defined: '.print_r($join,true));
 			/*#/if*/
 			if($join[0]!==false){
+				
 				$onConditions=array();
 				foreach($join[0] as $foreignKey=>$associationForeignKey)
 					$onConditions[]=$modelAlias.'.`'.$foreignKey.'`='.$join['alias'].'.`'.$associationForeignKey.'`';
 				if(isset($join['onConditions'])) $join['onConditions']=array_merge($join['onConditions'],$onConditions);
 				else $join['onConditions']=$onConditions;
+				
 			}
 			$this->_addJoinInJoin($join);
 		}
@@ -1024,6 +1035,11 @@ abstract class QFind extends QSelect{
 		if($fieldTableAlias !== null) foreach($resFields as &$resField) $resField=$fieldTableAlias.'.'.$resField;
 		foreach($resFields as $keyField=>$resField) $where[$resField]=$values[$keyField];
 		$query->where($where);
+		if(isset($w['onConditions'])){
+			foreach($w['onConditions'] as $key=>$value){
+				$query->addCondition($key, $value);
+			}
+		}
 		if(isset($w['with'])) $query->_setWith($w['with']);
 		if($moreWith!==null) $query->setAllWith($moreWith);
 		return $query;
