@@ -44,7 +44,7 @@ class HSitemaps{
 	public function add($url,$options=array(),$entry='index'){
 		if(++$this->count >49995){
 			$this->count=0;
-			$this->sitemap->end();
+			$this->sitemap->end($entry);
 			unset($this->sitemap);
 			$this->sitemap=$this->createNewSitemap('sitemaps/'.$this->prefix.($this->sitemapNum++).'.xml');
 		}
@@ -54,13 +54,13 @@ class HSitemaps{
 	/**
 	 * @return void
 	 */
-	public function end(){
+	public function end($entry='index'){
 		$this->sitemap->end();
 		
 		$sitemap=new HSitemapIndex($this->prefix.'sitemaps.xml');
 		$lastMod=date('c');
 		for($i=1;$i<$this->sitemapNum;$i++)
-			$sitemap->add('/web/files/sitemaps/'.$this->prefix.$i.'.xml.gz',array('lastmod'=>$lastMod));
+			$sitemap->add('/web/files/sitemaps/'.$this->prefix.$i.'.xml.gz',array('lastmod'=>$lastMod),$entry);
 		$sitemap->end();
 	}
 }
