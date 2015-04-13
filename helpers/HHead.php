@@ -215,6 +215,20 @@ class HHead{
 		self::$head['js'].='<script type="text/javascript" src="'.HHtml::staticUrl($url.'.js','js').'"></script>';
 		/*#if DEV */ return '<div style="color:red;font-size:12pt">Please do not echo HHead::linkJs()</div>'; /*#/if*/
 	}
+
+    /**
+     * @param string
+     * @param bool
+     * @return void
+     */
+    public static function linkAsyncJs($url='/global',$addOldIESuffix=true){
+        /*#if DEV */ self::testDisplayed(); /*#/if*/
+        if($addOldIESuffix && CHttpUserAgent::isIElt9()){
+            if(substr($url,-4)!=='.min') $url.='.oldIe';
+        }
+        self::$head['js'].='<script type="text/javascript" async src="'.HHtml::staticUrl($url.'.js','js').'"></script>';
+        /*#if DEV */ return '<div style="color:red;font-size:12pt">Please do not echo HHead::linkJs()</div>'; /*#/if*/
+    }
 	
 	/**
 	 * @param string

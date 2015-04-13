@@ -33,6 +33,6 @@ class HGoogle{
 			}
 		}
 		$url.='&size='.$size.($mapType===null?'':'&maptype='.$mapType);
-		return 'http://maps.googleapis.com/maps/api/staticmap?sensor=false'.$url;
+		return HTTP_OR_HTTPS.'maps.googleapis.com/maps/api/staticmap?sensor=false'.$url;
 	}
 }
