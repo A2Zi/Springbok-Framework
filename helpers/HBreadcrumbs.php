@@ -91,11 +91,11 @@ class HBreadcrumbs{
 		foreach(self::$_links as $value)
 			echo $separator.'<span itemscope itemtype="http://data-vocabulary.org/Breadcrumb">'
 				.self::link($value[0],$value[1],$linkoptions,$spanAttributes).'</span>';
-		{
-			$spanAttributes['class']='last';
-			if(self::$_lastTitle!==null) echo $separator.'<span class="last" itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><span itemprop="title">'.h(self::$_lastTitle).'</span></span>';
-			elseif(!empty($lastTitle)) echo $separator.'<span class="last" itemscope itemtype="http://data-vocabulary.org/Breadcrumb"><span itemprop="title">'.h($lastTitle).'</span></span>';
-		}
+
+        $spanAttributes['class']='last';
+        if(self::$_lastTitle!==null) echo $separator.'<span class="last"><span>'.h(self::$_lastTitle).'</span></span>';
+        elseif(!empty($lastTitle)) echo $separator.'<span class="last"><span>'.h($lastTitle).'</span></span>';
+
 		echo HHtml::closeTag(self::$tagName);
 		/*#if DEV */ return '<div style="color:red;font-size:12pt">Please do not echo HBreadcrumbs::display()</div>'; /*#/if*/
 	}
