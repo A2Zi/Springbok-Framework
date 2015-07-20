@@ -77,6 +77,14 @@ class HMeta{
 		HHead::metaName('robots','noindex, follow');
 		/*#if DEV */ return '<div style="color:red;font-size:12pt">Please do not echo HMeta::noindex_follow()</div>'; /*#/if*/
 	}
+
+    /**
+     * @return void
+     */
+    public static function index_follow(){
+        HHead::metaName('robots','index, follow');
+        /*#if DEV */ return '<div style="color:red;font-size:12pt">Please do not echo HMeta::index_follow()</div>'; /*#/if*/
+    }
 	
 	/**
 	 * @return void
