@@ -24,8 +24,18 @@ class CSession{
 	 * Start the session
 	 * @return void
 	 */
-	public static function start(){
-		/*#if DEV */if(!(Springbok::$inError!==null && headers_sent()))/*#/if*/session_start();
+	public static function start()
+    {
+        if (isset($_COOKIE['PHPSESSID'])) {
+            $sessid = $_COOKIE['PHPSESSID'];
+        }
+        if (empty($sessid) || !preg_match('/^[a-zA-Z0-9,\-]{22,40}$/', $sessid)) {
+            session_id(uniqid());
+            /*#if DEV */if (!(Springbok::$inError !== null && headers_sent()))/*#/if*/ {session_start();}
+            session_regenerate_id();
+        } else {
+            /*#if DEV */if (!(Springbok::$inError !== null && headers_sent()))/*#/if*/ {session_start();}
+        }
 		self::$_SESSION=&$_SESSION;
 	}
 	

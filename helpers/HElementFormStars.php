@@ -22,5 +22,5 @@ class HElementFormStars extends HElementFormInputSelect{
 	/**
 	 * @return HElementFormContainer
 	 */
-	public function container(){ return new HElementFormContainer($this->form,$this,'radio stars'); }
+	public function container(){return new HElementFormContainer($this->form,$this,'radio stars'); }
 }

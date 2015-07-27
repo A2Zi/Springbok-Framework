@@ -73,7 +73,7 @@ class HElementFormInputSelect extends HElementFormContainable{
 	 * @return string
 	 */
 	public function toString(){
-		return $this->_labelToString().$this->{'render_'.$this->style}();
+   		return $this->_labelToString().$this->{'render_'.$this->style}();
 	}
 	
 	/**
