@@ -53,6 +53,10 @@ class USecure{
 	 * @return string
 	 */
 	public static function decryptAES($val,$ky=null){
+		/* $val must be a string */
+		if(!is_string($val)){
+			return '';
+		}
 		if($ky===null) $ky=self::$_config['crypt_key'];
 		$val=base64_decode($val);
 		//return mcrypt_decrypt(MCRYPT_RIJNDAEL_256,$key,$value,MCRYPT_MODE_CBC);
