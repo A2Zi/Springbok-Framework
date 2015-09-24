@@ -4,9 +4,9 @@
  * Additional projects that may be used: http://sourceforge.net/projects/debugobject/
  * Acknowledge: Jose Solorzano (https://sourceforge.net/projects/php-html/)
  * Contributions by:
- *   Yousuke Kumakura (Attribute filters)
- *   Vadim Voituk (Negative indexes supports of "find" method)
- *   Antcs (Constructor with automatically load contents either text or file/url)
+ *	 Yousuke Kumakura (Attribute filters)
+ *	 Vadim Voituk (Negative indexes supports of "find" method)
+ *	 Antcs (Constructor with automatically load contents either text or file/url)
  *
  * all affected sections have comments starting with "PaperG"
  *
@@ -34,7 +34,7 @@
  * @author S.C. Chen <me578022@gmail.com>
  * @author John Schlick
  * @author Rus Carroll
- * @version 1.5 ($Rev: 208 $)
+ * @version 1.5 ($Rev: 210 $)
  * @package PlaceLocalInclude
  * @subpackage simple_html_dom
  */
@@ -45,25 +45,25 @@
  */
 define('HDOM_TYPE_ELEMENT', 1);
 define('HDOM_TYPE_COMMENT', 2);
-define('HDOM_TYPE_TEXT',    3);
+define('HDOM_TYPE_TEXT',	3);
 define('HDOM_TYPE_ENDTAG',  4);
-define('HDOM_TYPE_ROOT',    5);
+define('HDOM_TYPE_ROOT',	5);
 define('HDOM_TYPE_UNKNOWN', 6);
 define('HDOM_QUOTE_DOUBLE', 0);
 define('HDOM_QUOTE_SINGLE', 1);
-define('HDOM_QUOTE_NO',  3);
+define('HDOM_QUOTE_NO',	 3);
 define('HDOM_INFO_BEGIN',   0);
-define('HDOM_INFO_END',  1);
+define('HDOM_INFO_END',	 1);
 define('HDOM_INFO_QUOTE',   2);
 define('HDOM_INFO_SPACE',   3);
-define('HDOM_INFO_TEXT',    4);
+define('HDOM_INFO_TEXT',	4);
 define('HDOM_INFO_INNER',   5);
 define('HDOM_INFO_OUTER',   6);
 define('HDOM_INFO_ENDSPACE',7);
 define('DEFAULT_TARGET_CHARSET', 'UTF-8');
 define('DEFAULT_BR_TEXT', "\r\n");
 define('DEFAULT_SPAN_TEXT', " ");
-define('MAX_FILE_SIZE', 600000);
+define('MAX_FILE_SIZE', 10000000);
 // helper functions
 // -----------------------------------------------------------------------------
 // get html dom from file
@@ -153,7 +153,7 @@ class simple_html_dom_node
     // dump node's tree
     function dump($show_attr=true, $deep=0)
     {
-        $lead = str_repeat('    ', $deep);
+        $lead = str_repeat('	', $deep);
 
         echo $lead.$this->tag;
         if ($show_attr && count($this->attr)>0)
@@ -685,7 +685,7 @@ class simple_html_dom_node
 // Notice the \[ starting the attbute?  and the @? following?  This implies that an attribute can begin with an @ sign that is not captured.
 // This implies that an html attribute specifier may start with an @ sign that is NOT captured by the expression.
 // farther study is required to determine of this should be documented or removed.
-//      $pattern = "/([\w-:\*]*)(?:\#([\w-]+)|\.([\w-]+))?(?:\[@?(!?[\w-]+)(?:([!*^$]?=)[\"']?(.*?)[\"']?)?\])?([\/, ]+)/is";
+//		$pattern = "/([\w-:\*]*)(?:\#([\w-]+)|\.([\w-]+))?(?:\[@?(!?[\w-]+)(?:([!*^$]?=)[\"']?(.*?)[\"']?)?\])?([\/, ]+)/is";
         $pattern = "/([\w-:\*]*)(?:\#([\w-]+)|\.([\w-]+))?(?:\[@?(!?[\w-:]+)(?:([!*^$]?=)[\"']?(.*?)[\"']?)?\])?([\/, ]+)/is";
         preg_match_all($pattern, trim($selector_string).' ', $matches, PREG_SET_ORDER);
         if (is_object($debug_object)) {$debug_object->debug_log(2, "Matches Array: ", $matches);}
@@ -809,14 +809,14 @@ class simple_html_dom_node
 
         // Lets make sure that we don't have that silly BOM issue with any of the utf-8 text we output.
         if ($targetCharset == 'UTF-8')
-        {class_exists('UString',true);
-            if (mb_substr($converted_text, 0, 3) == "\xef\xbb\xbf")
+        {
+            if (substr($converted_text, 0, 3) == "\xef\xbb\xbf")
             {
-                $converted_text = mb_substr($converted_text, 3);
+                $converted_text = substr($converted_text, 3);
             }
-            if (mb_substr($converted_text, -3) == "\xef\xbb\xbf")
+            if (substr($converted_text, -3) == "\xef\xbb\xbf")
             {
-                $converted_text = mb_substr($converted_text, 0, -3);
+                $converted_text = substr($converted_text, 0, -3);
             }
         }
 
@@ -824,11 +824,11 @@ class simple_html_dom_node
     }
 
     /**
-    * Returns true if $string is valid UTF-8 and false otherwise.
-    *
-    * @param mixed $str String to be tested
-    * @return boolean
-    */
+     * Returns true if $string is valid UTF-8 and false otherwise.
+     *
+     * @param mixed $str String to be tested
+     * @return boolean
+     */
     static function is_utf8($str)
     {
         $c=0; $b=0;
@@ -904,7 +904,7 @@ class simple_html_dom_node
             $attributes = array();
             preg_match_all("/([\w-]+)\s*:\s*([^;]+)\s*;?/", $this->attr['style'], $matches, PREG_SET_ORDER);
             foreach ($matches as $match) {
-              $attributes[$match[1]] = $match[2];
+                $attributes[$match[1]] = $match[2];
             }
 
             // If there is a width in the style attributes:
@@ -950,7 +950,7 @@ class simple_html_dom_node
         // If the class or id is specified in a SEPARATE css file thats not on the page, go get it and do what we were just doing for the ones on the page.
 
         $result = array('height' => $height,
-                        'width' => $width);
+            'width' => $width);
         return $result;
     }
 
@@ -1220,7 +1220,7 @@ class simple_html_dom
 
         if (empty($charset))
         {
-            $el = $this->root->find('meta[http-equiv=Content-Type]',0);
+            $el = $this->root->find('meta[http-equiv=Content-Type]',0, true);
             if (!empty($el))
             {
                 $fullvalue = $el->content;
@@ -1228,7 +1228,7 @@ class simple_html_dom
 
                 if (!empty($fullvalue))
                 {
-                    $success = preg_match('/charset=(.+)/', $fullvalue, $matches);
+                    $success = preg_match('/charset=(.+)/i', $fullvalue, $matches);
                     if ($success)
                     {
                         $charset = $matches[1];
@@ -1738,3 +1738,5 @@ class simple_html_dom
     function getElementsByTagName($name, $idx=-1) {return $this->find($name, $idx);}
     function loadFile() {$args = func_get_args();$this->load_file($args);}
 }
+
+?>
