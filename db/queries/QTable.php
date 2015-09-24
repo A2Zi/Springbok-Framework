@@ -224,7 +224,7 @@ class QTable extends QFindAll{
 						is_array($displayField) ? $fields['v']=$displayField : $fields[]=$displayField;
 						$query->setFields($fields);
 						if($this->addInTable===false) $query->with($modelName,array('fields'=>false,'type'=>QFind::INNER,'join'=>true));
-						$belongsToFields[$field]=$query->execute();
+						$belongsToFields[$field]=$query->fetch();
 					}
 				}else{
 					$displayField=$relModelName::$__displayField;
