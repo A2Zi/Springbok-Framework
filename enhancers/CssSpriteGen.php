@@ -389,9 +389,9 @@ class CssSpriteGen {
 				 // set background colour to transparent
 				 // if no background colour use black
 				 if (!empty($this->aFormValues['background'])) {
-					$oSprite->paintTransparentImage(new ImagickPixel("#$sBgColour"), 0.0, 0);
+					$oSprite->transparentPaintImage(new ImagickPixel("#$sBgColour"), 0.0, 0,false);
 				 } else {
-					$oSprite->paintTransparentImage(new ImagickPixel("#000000"), 0.0, 0);
+					$oSprite->transparentPaintImage(new ImagickPixel("#000000"), 0.0, 0,false);
 				 }
 			  } else { // using GD - do the same thing
 				 if (!empty($this->aFormValues['background'])) {
