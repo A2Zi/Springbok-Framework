@@ -83,7 +83,7 @@ class UExec{
 	}
 
 	private static function _sshCommand($ssh){
-		$sshCommand='ssh  -C -c blowfish ';
+		$sshCommand='ssh  -C -c blowfish-cbc ';
 		//if(!empty($ssh['forcePseudoTty'])) $sshCommand.='-t ';
 		if(!empty($ssh['key_file'])) $sshCommand.='-i '.escapeshellarg($ssh['key_file']).' ';
 		//if(!empty($ssh['known_hosts_file'])) $sshCommand.='-o UserKnownHostsFile='.escapeshellarg($ssh['known_hosts_file']).' ';
