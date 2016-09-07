@@ -62,4 +62,28 @@ class COAuth2Google extends COAuth2Connect{
 		if(!empty($this->me['gender'])) $user->gender=$this->me['gender']==='male' ? SConsts::MAN : ($this->me['gender']==='female' ? SConsts::WOMAN : SConsts::UNKNOWN );
 		return true;
 	}
+
+    /**
+     * @return string
+     */
+    protected function getApiUrl()
+    {
+        return static::$API_URL;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTokenUrl()
+    {
+        return static::$TOKEN_URL;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getOAuthUrl()
+    {
+        return static::$OAUTH_URL;
+    }
 }

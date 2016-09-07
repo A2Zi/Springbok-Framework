@@ -61,4 +61,28 @@ class COAuth2Facebook extends COAuth2Connect{
 		if(!empty($this->me['verified'])) $facebookUser->facebook_verified=$this->me['verified'];
 		return true;
 	}
+
+    /**
+     * @return string
+     */
+    protected function getApiUrl()
+    {
+        return static::$API_URL;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getTokenUrl()
+    {
+        return static::$TOKEN_URL;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getOAuthUrl()
+    {
+        return static::$OAUTH_URL;
+    }
 }
