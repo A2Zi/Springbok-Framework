@@ -283,12 +283,12 @@ class HElementForm extends HElement{
 		if(substr($name,-3)==='_id' && Controller::_isset($vname=UInflector::pluralize(substr($name,0,-3))))
 			return $this->select($name,Controller::get($vname));
 		elseif($def['type']==='boolean'){
-			$attrs=$attributes;
+			$attrs=array();
 			if($this->_getValue($name)==='') $attrs['checked']=true;
-			return $this->hidden($name,'').$this->checkbox($name,_tF($modelName,$name),$attrs,$containerAttributes);
-		}elseif(isset($def['annotations']['Enum'])) return $this->select($name,call_user_func($modelName.'::'.$def['annotations']['Enum'].'List'),$attributes,$containerAttributes);
-		elseif(isset($def['annotations']['Text'])) return $this->textarea($name,$attributes,$containerAttributes);
-		else return $this->input($name,$attributes,$containerAttributes);
+			return $this->hidden($name,'').$this->checkbox($name,_tF($modelName,$name));
+		}elseif(isset($def['annotations']['Enum'])) return $this->select($name,call_user_func($modelName.'::'.$def['annotations']['Enum'].'List'));
+		elseif(isset($def['annotations']['Text'])) return $this->textarea($name);
+		else return $this->input($name);
 	}
 	
 	/**
