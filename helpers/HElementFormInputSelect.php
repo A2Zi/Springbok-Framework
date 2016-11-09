@@ -83,14 +83,15 @@ class HElementFormInputSelect extends HElementFormContainable{
 	 */
 	public function render_radio(){
 		$contentSelect='';
-		if($this->empty !== null){
-			$optionAttributes=array('value'=>'','type'=>'radio');
-			if($this->selected==='') $optionAttributes['selected']=true;
-			$contentSelect.=HHtml::tag('input',$optionAttributes,$this->empty);
-		}
 		$optionName=$this->_name($this->name);
+        $end=($this->addBr===true) ? '<br/>' :'' ;
+
+		if($this->empty !== null){
+            $selectedValue = $this->selected == '' ? '': $this->selected;
+			$contentSelect.=self::__radio($optionName,'',$selectedValue,$this->empty).$end;
+		}
+
 		if(!empty($this->list)){
-			$end=($this->addBr===true) ? '<br/>' :'' ;
 			if(is_object(current($this->list))){
 				foreach($this->list as $model)
 					$contentSelect.=self::__radio($optionName,$model->id(),$this->selected,$model->name()).$end;
