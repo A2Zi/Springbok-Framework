@@ -10,7 +10,7 @@ class CSoapWsdl{
 	/**
 	 * Add an array of elements
 	 * 
-	 * @param type of the elements
+	 * @param string type of the elements
 	 * @return void
 	 */
 	public function addArray($type){
@@ -49,12 +49,17 @@ class CSoapWsdl{
 	}
 	
 	private function addFieldsFromModel($modelName,&$el,$fields){
-		$propDef=$modelName::$__PROP_DEF; $modelInfos=$modelName::$__modelInfos;
 		if(empty($fields)) $fields=array_keys($propDef);
 		foreach($fields as $key=>$field){
+            $annotations=!empty($modelInfos['annotations'][$field])?$modelInfos['annotations'][$field]:array();
 			$settings=array('nillable'=>'true');
 			if(!empty($modelInfos['columns'][$field]['comment'])) $settings['docs']=$modelInfos['columns'][$field]['comment'];
-			$el[]=new PhpWsdlElement($field,$propDef[$field]['type'],$settings);
+            $type = $propDef[$field]['type'];
+            if($type === 'int' && isset($annotations['BooleanInt'])){
+                $type = 'boolean';
+            }
+
+			$el[]=new PhpWsdlElement($field,$type,$settings);
 		}
 	}
 	
