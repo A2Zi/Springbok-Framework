@@ -49,6 +49,8 @@ class CSoapWsdl{
 	}
 	
 	private function addFieldsFromModel($modelName,&$el,$fields){
+        $propDef=$modelName::$__PROP_DEF;
+        $modelInfos=$modelName::$__modelInfos;
 		if(empty($fields)) $fields=array_keys($propDef);
 		foreach($fields as $key=>$field){
             $annotations=!empty($modelInfos['annotations'][$field])?$modelInfos['annotations'][$field]:array();
