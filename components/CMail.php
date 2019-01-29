@@ -1,5 +1,7 @@
 <?php
-include CLIBS.'PHPMailer/class.phpmailer.php';
+require_once CLIBS.'PHPMailer/class.phpmailer.php';
+require_once CLIBS.'PHPMailer/class.pop3.php';
+require_once CLIBS.'PHPMailer/class.smtp.php';
 /**
  * Send and create mails
  * 
